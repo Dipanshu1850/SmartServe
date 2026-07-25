@@ -14,6 +14,7 @@ import { Route as DinerRouteImport } from './routes/diner'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TTableIdRouteImport } from './routes/t.$tableId'
 
 const ReserveRoute = ReserveRouteImport.update({
   id: '/reserve',
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TTableIdRoute = TTableIdRouteImport.update({
+  id: '/t/$tableId',
+  path: '/t/$tableId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/diner': typeof DinerRoute
   '/reserve': typeof ReserveRoute
+  '/t/$tableId': typeof TTableIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/diner': typeof DinerRoute
   '/reserve': typeof ReserveRoute
+  '/t/$tableId': typeof TTableIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,27 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/diner': typeof DinerRoute
   '/reserve': typeof ReserveRoute
+  '/t/$tableId': typeof TTableIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/dashboard' | '/diner' | '/reserve'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/dashboard'
+    | '/diner'
+    | '/reserve'
+    | '/t/$tableId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/dashboard' | '/diner' | '/reserve'
-  id: '__root__' | '/' | '/admin' | '/dashboard' | '/diner' | '/reserve'
+  to: '/' | '/admin' | '/dashboard' | '/diner' | '/reserve' | '/t/$tableId'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/dashboard'
+    | '/diner'
+    | '/reserve'
+    | '/t/$tableId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +99,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DinerRoute: typeof DinerRoute
   ReserveRoute: typeof ReserveRoute
+  TTableIdRoute: typeof TTableIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/t/$tableId': {
+      id: '/t/$tableId'
+      path: '/t/$tableId'
+      fullPath: '/t/$tableId'
+      preLoaderRoute: typeof TTableIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +155,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DinerRoute: DinerRoute,
   ReserveRoute: ReserveRoute,
+  TTableIdRoute: TTableIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

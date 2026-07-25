@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import {
   Bar,
   BarChart,
@@ -22,6 +23,7 @@ import {
   type Order,
   type OrderStatus,
 } from "@/lib/mock-data";
+import { publish, subscribe } from "@/lib/realtime";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
