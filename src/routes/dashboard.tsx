@@ -236,19 +236,29 @@ function OrdersKanban() {
   const [orders, setOrders] = useState<Order[]>(ORDERS);
   const cols: OrderStatus[] = ["queued", "preparing", "ready", "served"];
 
+  useEffect(() => {
+    const off = subscribe((e) => {
+      if (e.type === "order:new") {
+        setOrders((os) => (os.some((o) => o.id === e.order.id) ? os : [e.order, ...os]));
+      } else if (e.type === "order:status") {
+        setOrders((os) => os.map((o) => (o.id === e.id ? { ...o, status: e.status } : o)));
+      }
+    });
+    return off;
+  }, []);
+
   function advance(id: string) {
-    setOrders((os) =>
-      os.map((o) => {
-        if (o.id !== id) return o;
-        const next: Record<OrderStatus, OrderStatus> = {
-          queued: "preparing",
-          preparing: "ready",
-          ready: "served",
-          served: "served",
-        };
-        return { ...o, status: next[o.status] };
-      }),
-    );
+    const next: Record<OrderStatus, OrderStatus> = {
+      queued: "preparing",
+      preparing: "ready",
+      ready: "served",
+      served: "served",
+    };
+    const target = orders.find((o) => o.id === id);
+    if (!target) return;
+    const newStatus = next[target.status];
+    setOrders((os) => os.map((o) => (o.id === id ? { ...o, status: newStatus } : o)));
+    publish({ type: "order:status", id, status: newStatus });
   }
 
   return (
@@ -299,6 +309,7 @@ function OrdersKanban() {
     </div>
   );
 }
+
 
 const tableColor: Record<string, string> = {
   free: "bg-accent/20 border-accent/40 text-accent",
