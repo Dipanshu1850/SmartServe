@@ -505,18 +505,33 @@ function Copilot() {
     "Any inventory I should reorder today?",
   ];
 
-  function send(text: string) {
-    if (!text.trim()) return;
-    const answer: Msg = {
-      role: "ai",
-      text: aiReply(text),
-      chart: [30, 45, 22, 60, 78, 55],
-    };
-    setMessages((m) => [...m, { role: "user", text }, answer]);
+  const [pending, setPending] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  async function send(text: string) {
+    if (!text.trim() || pending) return;
+    setMessages((m) => [...m, { role: "user", text }]);
     setInput("");
+    setPending(true);
+    try {
+      const { text: reply } = await askCopilot({ data: { question: text } });
+      setMessages((m) => [
+        ...m,
+        { role: "ai", text: reply, chart: [30, 45, 22, 60, 78, 55] },
+      ]);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setMessages((m) => [...m, { role: "ai", text: `Copilot offline — ${msg}` }]);
+    } finally {
+      setPending(false);
+    }
   }
 
-  const historyPreview = useMemo(() => messages.slice(-6), [messages]);
+  const historyPreview = useMemo(() => messages.slice(-8), [messages]);
+
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
+  }, [historyPreview.length, pending]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -527,7 +542,7 @@ function Copilot() {
             Ops Copilot · Gemini 3 Flash
           </span>
         </div>
-        <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+        <div ref={listRef} className="flex-1 overflow-y-auto space-y-4 pr-2">
           {historyPreview.map((m, i) => (
             <div
               key={i}
