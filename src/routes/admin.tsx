@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
 import { RESTAURANTS } from "@/lib/mock-data";
+import { RequireRole } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -17,7 +18,11 @@ export const Route = createFileRoute("/admin")({
       },
     ],
   }),
-  component: Admin,
+  component: () => (
+    <RequireRole roles={["admin"]}>
+      <Admin />
+    </RequireRole>
+  ),
 });
 
 const statusColor: Record<string, string> = {

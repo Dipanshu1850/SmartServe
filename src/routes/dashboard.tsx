@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { RequireRole } from "@/lib/auth";
+import { askCopilot } from "@/lib/copilot.functions";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Bar,
@@ -41,7 +43,11 @@ export const Route = createFileRoute("/dashboard")({
       },
     ],
   }),
-  component: Dashboard,
+  component: () => (
+    <RequireRole roles={["manager", "admin"]}>
+      <Dashboard />
+    </RequireRole>
+  ),
 });
 
 const TABS = ["Overview", "Orders", "Tables", "Inventory", "Copilot"] as const;
@@ -499,18 +505,33 @@ function Copilot() {
     "Any inventory I should reorder today?",
   ];
 
-  function send(text: string) {
-    if (!text.trim()) return;
-    const answer: Msg = {
-      role: "ai",
-      text: aiReply(text),
-      chart: [30, 45, 22, 60, 78, 55],
-    };
-    setMessages((m) => [...m, { role: "user", text }, answer]);
+  const [pending, setPending] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  async function send(text: string) {
+    if (!text.trim() || pending) return;
+    setMessages((m) => [...m, { role: "user", text }]);
     setInput("");
+    setPending(true);
+    try {
+      const { text: reply } = await askCopilot({ data: { question: text } });
+      setMessages((m) => [
+        ...m,
+        { role: "ai", text: reply, chart: [30, 45, 22, 60, 78, 55] },
+      ]);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setMessages((m) => [...m, { role: "ai", text: `Copilot offline — ${msg}` }]);
+    } finally {
+      setPending(false);
+    }
   }
 
-  const historyPreview = useMemo(() => messages.slice(-6), [messages]);
+  const historyPreview = useMemo(() => messages.slice(-8), [messages]);
+
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
+  }, [historyPreview.length, pending]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -521,7 +542,7 @@ function Copilot() {
             Ops Copilot · Gemini 3 Flash
           </span>
         </div>
-        <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+        <div ref={listRef} className="flex-1 overflow-y-auto space-y-4 pr-2">
           {historyPreview.map((m, i) => (
             <div
               key={i}
@@ -554,6 +575,13 @@ function Copilot() {
               </div>
             </div>
           ))}
+          {pending && (
+            <div className="flex justify-start">
+              <div className="max-w-[80%] rounded-2xl p-4 bg-white/5 border border-white/10 rounded-tl-sm">
+                <p className="text-sm text-white/60 font-mono">Thinking…</p>
+              </div>
+            </div>
+          )}
         </div>
         <form
           onSubmit={(e) => {
@@ -565,14 +593,16 @@ function Copilot() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            disabled={pending}
             placeholder="Ask about sales, inventory, staff, forecasts…"
-            className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm placeholder:text-white/40 focus:outline-none focus:border-primary/50"
+            className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm placeholder:text-white/40 focus:outline-none focus:border-primary/50 disabled:opacity-60"
           />
           <button
             type="submit"
-            className="px-4 py-2 rounded-full bg-primary text-primary-foreground text-[11px] font-mono uppercase tracking-widest"
+            disabled={pending}
+            className="px-4 py-2 rounded-full bg-primary text-primary-foreground text-[11px] font-mono uppercase tracking-widest disabled:opacity-60"
           >
-            Ask
+            {pending ? "…" : "Ask"}
           </button>
         </form>
       </div>
@@ -610,13 +640,3 @@ function Copilot() {
   );
 }
 
-function aiReply(q: string): string {
-  const s = q.toLowerCase();
-  if (s.includes("forecast") || s.includes("demand"))
-    return "Next Friday projects 198 covers (~$8.2k). Ribeye demand +18% — reorder 6kg by Thu 4 PM. Burrata trending; keep 15+ pcs on hand.";
-  if (s.includes("server") || s.includes("staff"))
-    return "Amelia leads on avg ticket ($52.40) driven by wine pairings. Consider assigning her to Table 12 (top spenders) tonight.";
-  if (s.includes("reorder") || s.includes("inventory"))
-    return "Reorder today: Wagyu Ribeye (0.4 kg → 6 kg), Truffle Butter (1.1 → 3 kg). Sea Bass and Burrata OK through Sunday.";
-  return "Analyzing… Tuesday 5–6 PM is your softest slot. Ribeye 86's caused 40% of walk-away. Try an early-bird Tagliatelle special.";
-}

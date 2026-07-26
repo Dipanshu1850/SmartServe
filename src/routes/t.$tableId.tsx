@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { MENU, type MenuItem, type Order, type OrderStatus } from "@/lib/mock-data";
 import { publish, subscribe } from "@/lib/realtime";
+import { CheckoutModal, type CheckoutItem } from "@/components/CheckoutModal";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/t/$tableId")({
@@ -39,6 +40,7 @@ function TableOrder() {
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("Mains");
   const [cart, setCart] = useState<Record<string, number>>({});
   const [order, setOrder] = useState<Order | null>(null);
+  const [orderLines, setOrderLines] = useState<CheckoutItem[]>([]);
 
   const items = useMemo(() => MENU.filter((m) => m.category === category), [category]);
   const cartLines = useMemo(
@@ -91,13 +93,21 @@ function TableOrder() {
       total,
     };
     setOrder(newOrder);
+    setOrderLines(cartLines.map((l) => ({ name: l.name, qty: l.qty, price: l.price })));
     setCart({});
     publish({ type: "order:new", order: newOrder });
     toast.success("Sent to kitchen", { description: `#${newOrder.id}` });
   }
 
   if (order) {
-    return <LiveStatus order={order} tableLabel={tableLabel} onNew={() => setOrder(null)} />;
+    return (
+      <LiveStatus
+        order={order}
+        tableLabel={tableLabel}
+        lines={orderLines}
+        onNew={() => setOrder(null)}
+      />
+    );
   }
 
   return (
@@ -241,13 +251,17 @@ function TableOrder() {
 function LiveStatus({
   order,
   tableLabel,
+  lines,
   onNew,
 }: {
   order: Order;
   tableLabel: string;
+  lines: CheckoutItem[];
   onNew: () => void;
 }) {
   const currentIdx = STATUS_STEPS.findIndex((s) => s.key === order.status);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [paid, setPaid] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -327,17 +341,36 @@ function LiveStatus({
           </div>
         </section>
 
-        <button
-          onClick={onNew}
-          className="w-full py-3 rounded-full border border-border text-[11px] font-mono uppercase tracking-widest hover:bg-secondary"
-        >
-          + Add another round
-        </button>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={onNew}
+            className="py-3 rounded-full border border-border text-[11px] font-mono uppercase tracking-widest hover:bg-secondary"
+          >
+            + Add round
+          </button>
+          <button
+            onClick={() => setCheckoutOpen(true)}
+            disabled={paid}
+            className="py-3 rounded-full bg-primary text-primary-foreground text-[11px] font-mono uppercase tracking-widest disabled:opacity-60"
+          >
+            {paid ? "Paid ✓" : "Pay bill"}
+          </button>
+        </div>
 
         <p className="text-center text-[10px] font-mono uppercase tracking-widest text-muted">
           Manager advances status live from the dashboard →
         </p>
       </main>
+      <CheckoutModal
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        items={lines}
+        tableLabel={`Table ${tableLabel}`}
+        onPaid={() => {
+          setPaid(true);
+          toast.success("Payment received");
+        }}
+      />
     </div>
   );
 }
