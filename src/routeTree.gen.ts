@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReserveRouteImport } from './routes/reserve'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as KdsRouteImport } from './routes/kds'
 import { Route as DinerRouteImport } from './routes/diner'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -25,6 +26,11 @@ const ReserveRoute = ReserveRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KdsRoute = KdsRouteImport.update({
+  id: '/kds',
+  path: '/kds',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DinerRoute = DinerRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/diner': typeof DinerRoute
+  '/kds': typeof KdsRoute
   '/login': typeof LoginRoute
   '/reserve': typeof ReserveRoute
   '/t/$tableId': typeof TTableIdRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/diner': typeof DinerRoute
+  '/kds': typeof KdsRoute
   '/login': typeof LoginRoute
   '/reserve': typeof ReserveRoute
   '/t/$tableId': typeof TTableIdRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/dashboard': typeof DashboardRoute
   '/diner': typeof DinerRoute
+  '/kds': typeof KdsRoute
   '/login': typeof LoginRoute
   '/reserve': typeof ReserveRoute
   '/t/$tableId': typeof TTableIdRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/diner'
+    | '/kds'
     | '/login'
     | '/reserve'
     | '/t/$tableId'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/diner'
+    | '/kds'
     | '/login'
     | '/reserve'
     | '/t/$tableId'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/diner'
+    | '/kds'
     | '/login'
     | '/reserve'
     | '/t/$tableId'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   DashboardRoute: typeof DashboardRoute
   DinerRoute: typeof DinerRoute
+  KdsRoute: typeof KdsRoute
   LoginRoute: typeof LoginRoute
   ReserveRoute: typeof ReserveRoute
   TTableIdRoute: typeof TTableIdRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kds': {
+      id: '/kds'
+      path: '/kds'
+      fullPath: '/kds'
+      preLoaderRoute: typeof KdsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diner': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   DashboardRoute: DashboardRoute,
   DinerRoute: DinerRoute,
+  KdsRoute: KdsRoute,
   LoginRoute: LoginRoute,
   ReserveRoute: ReserveRoute,
   TTableIdRoute: TTableIdRoute,
