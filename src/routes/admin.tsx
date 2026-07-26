@@ -17,7 +17,11 @@ export const Route = createFileRoute("/admin")({
       },
     ],
   }),
-  component: Admin,
+  component: () => (
+    <RequireRole roles={["admin"]}>
+      <Admin />
+    </RequireRole>
+  ),
 });
 
 const statusColor: Record<string, string> = {

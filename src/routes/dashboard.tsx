@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { RequireRole } from "@/lib/auth";
+import { askCopilot } from "@/lib/copilot.functions";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Bar,
@@ -41,7 +43,11 @@ export const Route = createFileRoute("/dashboard")({
       },
     ],
   }),
-  component: Dashboard,
+  component: () => (
+    <RequireRole roles={["manager", "admin"]}>
+      <Dashboard />
+    </RequireRole>
+  ),
 });
 
 const TABS = ["Overview", "Orders", "Tables", "Inventory", "Copilot"] as const;
