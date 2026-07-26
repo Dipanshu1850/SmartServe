@@ -575,6 +575,13 @@ function Copilot() {
               </div>
             </div>
           ))}
+          {pending && (
+            <div className="flex justify-start">
+              <div className="max-w-[80%] rounded-2xl p-4 bg-white/5 border border-white/10 rounded-tl-sm">
+                <p className="text-sm text-white/60 font-mono">Thinking…</p>
+              </div>
+            </div>
+          )}
         </div>
         <form
           onSubmit={(e) => {
@@ -586,14 +593,16 @@ function Copilot() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            disabled={pending}
             placeholder="Ask about sales, inventory, staff, forecasts…"
-            className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm placeholder:text-white/40 focus:outline-none focus:border-primary/50"
+            className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm placeholder:text-white/40 focus:outline-none focus:border-primary/50 disabled:opacity-60"
           />
           <button
             type="submit"
-            className="px-4 py-2 rounded-full bg-primary text-primary-foreground text-[11px] font-mono uppercase tracking-widest"
+            disabled={pending}
+            className="px-4 py-2 rounded-full bg-primary text-primary-foreground text-[11px] font-mono uppercase tracking-widest disabled:opacity-60"
           >
-            Ask
+            {pending ? "…" : "Ask"}
           </button>
         </form>
       </div>
@@ -631,13 +640,3 @@ function Copilot() {
   );
 }
 
-function aiReply(q: string): string {
-  const s = q.toLowerCase();
-  if (s.includes("forecast") || s.includes("demand"))
-    return "Next Friday projects 198 covers (~$8.2k). Ribeye demand +18% — reorder 6kg by Thu 4 PM. Burrata trending; keep 15+ pcs on hand.";
-  if (s.includes("server") || s.includes("staff"))
-    return "Amelia leads on avg ticket ($52.40) driven by wine pairings. Consider assigning her to Table 12 (top spenders) tonight.";
-  if (s.includes("reorder") || s.includes("inventory"))
-    return "Reorder today: Wagyu Ribeye (0.4 kg → 6 kg), Truffle Butter (1.1 → 3 kg). Sea Bass and Burrata OK through Sunday.";
-  return "Analyzing… Tuesday 5–6 PM is your softest slot. Ribeye 86's caused 40% of walk-away. Try an early-bird Tagliatelle special.";
-}
