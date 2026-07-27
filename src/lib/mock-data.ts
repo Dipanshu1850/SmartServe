@@ -1,10 +1,3 @@
-import tagliatelle from "@/assets/dish-tagliatelle.jpg";
-import seabass from "@/assets/dish-seabass.jpg";
-import ribeye from "@/assets/dish-ribeye.jpg";
-import burrata from "@/assets/dish-burrata.jpg";
-import lava from "@/assets/dish-lava.jpg";
-import cocktail from "@/assets/dish-cocktail.jpg";
-
 export type MenuItem = {
   id: string;
   name: string;
@@ -25,7 +18,7 @@ export const MENU: MenuItem[] = [
     description: "Clay oven roasted cottage cheese, spices, bell peppers, mint chutney.",
     price: 320,
     category: "Starters",
-    image: burrata, // Reusing Burrata image as placeholder asset
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Delicious%20Tandoori%20Paneer%20Tikka%2C%20grilled%20cottage%20cheese%20cubes%20with%20bell%20peppers%20and%20onions%2C%20served%20on%20a%20platter%20with%20mint%20chutney%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Tandoori Paneer Tikka
     tags: ["Veg", "GF", "Spicy"],
     available: 15,
     chefsChoice: true,
@@ -36,7 +29,7 @@ export const MENU: MenuItem[] = [
     description: "Tandoori chicken shreds, rich tomato-butter cream gravy, dry fenugreek.",
     price: 550,
     category: "Mains",
-    image: tagliatelle, // Reusing pasta image as placeholder asset
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Authentic%20Indian%20Butter%20Chicken%2C%20creamy%20tomato%20gravy%20with%20tender%20chicken%20pieces%2C%20served%20in%20a%20traditional%20copper%20bowl%2C%20garnished%20with%20cream%20and%20coriander%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Classic Butter Chicken
     tags: ["Signature", "Non-Veg"],
     available: 10,
     chefsChoice: true,
@@ -47,7 +40,7 @@ export const MENU: MenuItem[] = [
     description: "Garlic clay oven bread paired with 24-hour slow-cooked black lentils.",
     price: 380,
     category: "Mains",
-    image: ribeye, // Reusing ribeye image as placeholder asset
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Slow-cooked%20Dal%20Makhani%20in%20a%20black%20bowl%20paired%20with%20buttery%20Peshawari%20Naan%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Peshawari Naan & Dal Makhani
     tags: ["Veg", "Popular"],
     available: 25,
   },
@@ -57,7 +50,7 @@ export const MENU: MenuItem[] = [
     description: "Traditional yogurt smoothie with Alphonso mango pulp and cardamom.",
     price: 180,
     category: "Drinks",
-    image: cocktail, // Reusing cocktail image as placeholder asset
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Refreshing%20Mango%20Lassi%20in%20a%20tall%20glass%2C%20garnished%20with%20saffron%20strands%20and%20pistachio%20bits%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Mango Lassi
     tags: ["Veg", "Cold"],
     available: 50,
   },
@@ -67,7 +60,7 @@ export const MENU: MenuItem[] = [
     description: "Clotted milk frozen dessert, saffron, pistachio, vermicelli.",
     price: 220,
     category: "Desserts",
-    image: lava, // Reusing lava cake image as placeholder asset
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Traditional%20Saffron%20Kulfi%20Falooda%20served%20in%20a%20glass%20bowl%2C%20clotted%20milk%20ice%20cream%20with%20vermicelli%2C%20rose%20syrup%20and%20nuts%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Saffron Kulfi Falooda
     tags: ["Veg", "Sweet"],
     available: 12,
   },
@@ -79,7 +72,7 @@ export const MENU: MenuItem[] = [
     description: "Wild mushroom, truffle butter, aged pecorino.",
     price: 480,
     category: "Mains",
-    image: tagliatelle,
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Hand-Cut%20Tagliatelle%20with%20wild%20mushroom%2C%20truffle%20butter%2C%20aged%20pecorino%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Hand-Cut Tagliatelle
     tags: ["Veg", "Signature"],
     available: 8,
   },
@@ -89,7 +82,7 @@ export const MENU: MenuItem[] = [
     description: "Charred lemon, salsa verde, fennel.",
     price: 750,
     category: "Mains",
-    image: seabass,
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Grilled%20Sea%20Bass%20with%20charred%20lemon%2C%20salsa%20verde%2C%20fennel%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Grilled Sea Bass
     tags: ["GF"],
     available: 5,
   },
@@ -99,7 +92,7 @@ export const MENU: MenuItem[] = [
     description: "Aged 45 days, rosemary jus, Maldon salt.",
     price: 1450,
     category: "Mains",
-    image: ribeye,
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Wagyu%20Ribeye%20steak%2C%20aged%2045%20days%2C%20rosemary%20jus%2C%20Maldon%20salt%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Wagyu Ribeye
     tags: ["Signature"],
     available: 0,
   },
@@ -109,7 +102,7 @@ export const MENU: MenuItem[] = [
     description: "Sun-gold tomatoes, basil oil, sourdough.",
     price: 380,
     category: "Starters",
-    image: burrata,
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Heirloom%20Burrata%20with%20sun-gold%20tomatoes%2C%20basil%20oil%2C%20sourdough%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Heirloom Burrata
     tags: ["Veg", "GF"],
     available: 12,
   },
@@ -119,7 +112,7 @@ export const MENU: MenuItem[] = [
     description: "Warm dark chocolate, vanilla bean gelato, berries.",
     price: 280,
     category: "Desserts",
-    image: lava,
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Molten%20Chocolate%20cake%2C%20warm%20dark%20chocolate%2C%20vanilla%20bean%20gelato%2C%20berries%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Molten Chocolate
     tags: ["Veg"],
     available: 15,
   },
@@ -129,7 +122,7 @@ export const MENU: MenuItem[] = [
     description: "Bourbon, honey, lemon, aromatic bitters.",
     price: 350,
     category: "Drinks",
-    image: cocktail,
+    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Amber%20Sour%20cocktail%2C%20bourbon%2C%20honey%2C%20lemon%2C%20aromatic%20bitters%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Amber Sour
     tags: ["21+"],
     available: 40,
   },

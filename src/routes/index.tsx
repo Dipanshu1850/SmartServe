@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
-import tagliatelle from "@/assets/dish-tagliatelle.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -268,7 +267,7 @@ function Landing() {
           </div>
           <div className="bg-card rounded-2xl p-6 shadow-sm border border-border space-y-6">
             <img
-              src={tagliatelle}
+              src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Restaurant%20ambiance%20preview%2C%20modern%20fine%20dining%20interior%2C%20warm%20lighting%2C%20professional%20photography&image_size=landscape_4_3"
               alt="Restaurant ambiance preview"
               width={1024}
               height={768}
