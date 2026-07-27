@@ -4,6 +4,6 @@
   "installCommand": "bun install --frozen-lockfile",
   "buildCommand": "bun run build",
   "devCommand": "bun run dev",
-  "nodeVersion": "20.x",
+  "bunVersion": "1.2.0",
   "outputDirectory": ".vercel/output"
 }
