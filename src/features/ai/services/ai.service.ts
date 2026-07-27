@@ -26,7 +26,7 @@ export const askCopilot = createServerFn({ method: "POST" })
     const rolePrompt = data.role ? ROLE_PROMPTS[data.role] : "";
     const menuContext = MENU.map(
       (item) =>
-        `- ${item.name} (${item.category}, ₹${item.price}) — ${item.description}. ${
+        `- ${item.name} (${item.category}, INR ${item.price}) — ${item.description}. ${
           item.available > 0 ? `Available (${item.available} remaining)` : "Unavailable / 86'd"
         }`
     ).join("\n");
@@ -34,7 +34,7 @@ export const askCopilot = createServerFn({ method: "POST" })
       (order) =>
         `- ${order.id}: table ${order.table}; ${order.status}; ${order.minutes} minutes ago; ${order.items
           .map((item) => `${item.qty}× ${item.name}`)
-          .join(", ")}; total ₹${order.total}`
+          .join(", ")}; total INR ${order.total}`
     ).join("\n");
     const tableContext = TABLES.map((table) => `- ${table.id}: ${table.status}; ${table.seats} seats`).join("\n");
     const operationsContext = `\n\nCurrent order and table system data:\nOrders:\n${orderContext}\n\nTables:\n${tableContext}`;

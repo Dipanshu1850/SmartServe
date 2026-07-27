@@ -19,12 +19,11 @@ export function Overview() {
 
   return (
     <div className="space-y-8">
-      <ProactiveInsights />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <KpiCard label="Revenue today" value="₹1,48,200" delta="↑ 12% vs last Sat" />
-        <KpiCard label="Covers" value="128" delta="↑ 8%" />
-        <KpiCard label="Avg. ticket" value="₹1,150" />
-        <KpiCard label="Turn time" value="42m" delta="↓ 6m" />
+        <KpiCard label="Revenue today" value="INR 1,48,200" delta="+ 12% vs last Sat" />
+        <KpiCard label="Covers" value="128" delta="+ 8%" />
+        <KpiCard label="Avg. ticket" value="INR 1,150" />
+        <KpiCard label="Turn time" value="42m" delta="- 6m" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -34,9 +33,9 @@ export function Overview() {
               <div className="text-[10px] font-mono uppercase tracking-widest text-muted">
                 Revenue · Last 7 days
               </div>
-              <div className="font-display italic text-2xl mt-1">₹10,34,600</div>
+              <div className="font-display italic text-2xl mt-1">INR 10,34,600</div>
             </div>
-            <span className="text-[10px] font-mono text-accent">↑ 14% WoW</span>
+            <span className="text-[10px] font-mono text-accent">+ 14% WoW</span>
           </div>
           <div className="h-64">
             <RevenueChart data={salesByDay} />
@@ -82,9 +81,9 @@ export function Overview() {
           </div>
           <ul className="space-y-3">
             {[
-              "Table 4 has been waiting 12 min without an order — check in?",
+              "Table 4 has been waiting 12 min without an order - check in?",
               "Wagyu Ribeye stock is critical (0.4 kg). Auto-suggest 86 after 2 more orders.",
-              "Kitchen ticket #ORD-1042 is 4 min behind avg. — reassign?",
+              "Kitchen ticket #ORD-1042 is 4 min behind avg. - reassign?",
             ].map((a) => (
               <li
                 key={a}
@@ -97,6 +96,7 @@ export function Overview() {
           </ul>
         </div>
       </div>
+      <ProactiveInsights />
     </div>
   );
 }

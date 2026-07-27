@@ -29,9 +29,10 @@ export function ProactiveInsights() {
   useEffect(() => {
     const timer = setTimeout(() => {
       const insight = INSIGHTS[index];
+      const Icon = insight.icon;
       toast(insight.title, {
         description: insight.message,
-        icon: <insight.icon className="size-4 text-primary" />,
+        icon: <Icon className="size-4 text-primary" />,
         duration: 8000,
       });
       setIndex((prev) => (prev + 1) % INSIGHTS.length);
