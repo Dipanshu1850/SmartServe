@@ -1,13 +1,14 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useAuth, type Role } from "@/lib/auth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { type Role } from "@/features/auth/types/auth.types";
 
 const links = [
   { to: "/", label: "Landing", roles: null },
-  { to: "/diner", label: "Diner", roles: null },
+  { to: "/customer", label: "Customer Portal", roles: ["customer"] as Role[] },
   { to: "/reserve", label: "Reserve", roles: null },
-  { to: "/kds", label: "Kitchen", roles: ["server", "manager", "admin"] as Role[] },
-  { to: "/dashboard", label: "Dashboard", roles: ["manager", "admin"] as Role[] },
-  { to: "/admin", label: "Admin", roles: ["admin"] as Role[] },
+  { to: "/staff", label: "Staff Portal", roles: ["staff"] as Role[] },
+  { to: "/manager", label: "Manager Dashboard", roles: ["manager", "owner"] as Role[] },
+  { to: "/owner", label: "Owner Dashboard", roles: ["owner"] as Role[] },
 ] as const;
 
 export function SiteNav() {
@@ -64,12 +65,14 @@ export function SiteNav() {
             <>
               <Link
                 to="/login"
+                search={{ next: "/" }}
                 className="hidden sm:inline-flex px-4 py-2 text-[10px] font-mono border border-border rounded-full hover:bg-foreground/5 transition-colors uppercase tracking-widest"
               >
                 Sign in
               </Link>
               <Link
                 to="/login"
+                search={{ next: "/" }}
                 className="px-4 py-2 text-[10px] font-mono bg-foreground text-background rounded-full uppercase tracking-widest"
               >
                 Get Started

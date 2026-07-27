@@ -1,6 +1,5 @@
 import { useState } from "react";
-
-export type CheckoutItem = { name: string; qty: number; price: number };
+import { type CheckoutItem } from "../types/order.types";
 
 export function CheckoutModal({
   open,
@@ -72,7 +71,7 @@ export function CheckoutModal({
                   <span>
                     {it.name} <span className="text-muted font-mono">×{it.qty}</span>
                   </span>
-                  <span className="font-mono">${(it.price * it.qty).toFixed(2)}</span>
+                  <span className="font-mono">₹{(it.price * it.qty).toFixed(2)}</span>
                 </li>
               ))}
             </ul>
@@ -122,15 +121,15 @@ export function CheckoutModal({
             </div>
 
             <div className="bg-background border border-border rounded-xl p-4 space-y-1 text-sm">
-              <Row label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
-              <Row label="Tax (8.75%)" value={`$${tax.toFixed(2)}`} />
-              <Row label={`Tip (${tipPct}%)`} value={`$${tip.toFixed(2)}`} />
+              <Row label="Subtotal" value={`₹${subtotal.toFixed(2)}`} />
+              <Row label="Tax (8.75%)" value={`₹${tax.toFixed(2)}`} />
+              <Row label={`Tip (${tipPct}%)`} value={`₹${tip.toFixed(2)}`} />
               <div className="border-t border-border pt-2 mt-2">
-                <Row label="Total" value={`$${total.toFixed(2)}`} bold />
+                <Row label="Total" value={`₹${total.toFixed(2)}`} bold />
                 {splits > 1 && (
                   <Row
                     label={`Per guest (÷${splits})`}
-                    value={`$${perGuest.toFixed(2)}`}
+                    value={`₹${perGuest.toFixed(2)}`}
                     muted
                   />
                 )}
@@ -152,7 +151,7 @@ export function CheckoutModal({
               <div className="text-[10px] font-mono uppercase tracking-widest text-muted">
                 Charge
               </div>
-              <div className="font-display italic text-3xl">${total.toFixed(2)}</div>
+              <div className="font-display italic text-3xl">₹{total.toFixed(2)}</div>
             </div>
             <div>
               <label className="text-[10px] font-mono uppercase tracking-widest text-muted">
@@ -192,7 +191,7 @@ export function CheckoutModal({
               disabled={processing}
               className="w-full py-3 rounded-full bg-primary text-primary-foreground text-[11px] font-mono uppercase tracking-widest disabled:opacity-60"
             >
-              {processing ? "Processing…" : `Pay $${total.toFixed(2)}`}
+              {processing ? "Processing…" : `Pay ₹${total.toFixed(2)}`}
             </button>
           </div>
         )}
@@ -205,7 +204,7 @@ export function CheckoutModal({
             <div>
               <div className="font-display italic text-3xl">Paid.</div>
               <p className="text-sm text-muted mt-2">
-                ${total.toFixed(2)} charged · ${tip.toFixed(2)} tip added for the team.
+                ₹{total.toFixed(2)} charged · ₹{tip.toFixed(2)} tip added for the team.
               </p>
             </div>
             <button

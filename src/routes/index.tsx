@@ -31,23 +31,19 @@ function Landing() {
       {/* Hero */}
       <section className="pt-24 pb-16 px-6 max-w-7xl mx-auto">
         <div className="max-w-[85ch] animate-in">
-          <span className="inline-flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-muted mb-8">
-            <span className="size-1.5 rounded-full bg-accent pulse-status" />
-            Built for VibeAthon 6.0 · Platinum tier
-          </span>
           <h1 className="text-6xl md:text-8xl font-display text-balance leading-[0.9] mb-8 tracking-tighter">
             Operations <span className="italic text-primary">plated</span> with precision.
           </h1>
           <p className="text-xl text-muted max-w-[54ch] text-pretty leading-relaxed mb-10">
-            SmartServe bridges the gap between the chaotic kitchen line and the curated diner
+            SmartServe bridges the gap between the chaotic kitchen line and the curated customer
             experience. One engine, two faces, infinite control.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
-              to="/diner"
+              to="/customer"
               className="px-5 py-3 bg-foreground text-background rounded-full text-xs font-mono uppercase tracking-widest hover:opacity-90 transition-opacity"
             >
-              Try the Diner Experience →
+              Try the Customer Experience →
             </Link>
             <Link
               to="/dashboard"
@@ -85,7 +81,7 @@ function Landing() {
       <section className="max-w-7xl mx-auto px-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-5 space-y-6 animate-in">
           <div className="flex items-end justify-between border-b border-border pb-2">
-            <h3 className="font-display italic text-2xl">Diner Surface</h3>
+            <h3 className="font-display italic text-2xl">Customer Portal</h3>
             <span className="font-mono text-[10px] text-muted uppercase tracking-widest">
               Table 14 · Scan active
             </span>
@@ -102,12 +98,12 @@ function Landing() {
             <div className="space-y-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <h4 className="text-lg font-semibold">Hand-Cut Tagliatelle</h4>
+                  <h4 className="text-lg font-semibold">Classic Butter Chicken</h4>
                   <p className="text-sm text-muted">
-                    Wild mushroom, truffle butter, aged pecorino.
+                    Tandoori chicken shreds, rich tomato-butter cream gravy, dry fenugreek.
                   </p>
                 </div>
-                <span className="font-mono text-primary">$24.00</span>
+                <span className="font-mono text-primary">₹550.00</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 <span className="inline-flex items-center gap-2 px-2.5 py-1 bg-primary/5 border border-primary/20 rounded-full">
@@ -230,9 +226,6 @@ function Landing() {
       <footer className="border-t border-border">
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="font-display italic text-lg">SmartServe</span>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-muted">
-            © 2026 · Built for VibeAthon 6.0
-          </span>
         </div>
       </footer>
     </div>

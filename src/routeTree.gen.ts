@@ -9,38 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ReserveRouteImport } from './routes/reserve'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as KdsRouteImport } from './routes/kds'
-import { Route as DinerRouteImport } from './routes/diner'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CustomerRouteImport } from './routes/customer'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ManagerRouteImport } from './routes/manager'
+import { Route as OwnerRouteImport } from './routes/owner'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ReserveRouteImport } from './routes/reserve'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as StaffRouteImport } from './routes/staff'
 import { Route as TTableIdRouteImport } from './routes/t.$tableId'
 
-const ReserveRoute = ReserveRouteImport.update({
-  id: '/reserve',
-  path: '/reserve',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KdsRoute = KdsRouteImport.update({
-  id: '/kds',
-  path: '/kds',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DinerRoute = DinerRouteImport.update({
-  id: '/diner',
-  path: '/diner',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -48,9 +33,54 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const CustomerRoute = CustomerRouteImport.update({
+  id: '/customer',
+  path: '/customer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManagerRoute = ManagerRouteImport.update({
+  id: '/manager',
+  path: '/manager',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OwnerRoute = OwnerRouteImport.update({
+  id: '/owner',
+  path: '/owner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReserveRoute = ReserveRouteImport.update({
+  id: '/reserve',
+  path: '/reserve',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffRoute = StaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TTableIdRoute = TTableIdRouteImport.update({
@@ -62,32 +92,47 @@ const TTableIdRoute = TTableIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
-  '/diner': typeof DinerRoute
-  '/kds': typeof KdsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/manager': typeof ManagerRoute
+  '/owner': typeof OwnerRoute
+  '/register': typeof RegisterRoute
   '/reserve': typeof ReserveRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/staff': typeof StaffRoute
   '/t/$tableId': typeof TTableIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
-  '/diner': typeof DinerRoute
-  '/kds': typeof KdsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/manager': typeof ManagerRoute
+  '/owner': typeof OwnerRoute
+  '/register': typeof RegisterRoute
   '/reserve': typeof ReserveRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/staff': typeof StaffRoute
   '/t/$tableId': typeof TTableIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
-  '/diner': typeof DinerRoute
-  '/kds': typeof KdsRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/manager': typeof ManagerRoute
+  '/owner': typeof OwnerRoute
+  '/register': typeof RegisterRoute
   '/reserve': typeof ReserveRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/staff': typeof StaffRoute
   '/t/$tableId': typeof TTableIdRoute
 }
 export interface FileRouteTypes {
@@ -95,80 +140,72 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/customer'
     | '/dashboard'
-    | '/diner'
-    | '/kds'
+    | '/forgot-password'
     | '/login'
+    | '/manager'
+    | '/owner'
+    | '/register'
     | '/reserve'
+    | '/reset-password'
+    | '/staff'
     | '/t/$tableId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
+    | '/customer'
     | '/dashboard'
-    | '/diner'
-    | '/kds'
+    | '/forgot-password'
     | '/login'
+    | '/manager'
+    | '/owner'
+    | '/register'
     | '/reserve'
+    | '/reset-password'
+    | '/staff'
     | '/t/$tableId'
   id:
     | '__root__'
     | '/'
     | '/admin'
+    | '/customer'
     | '/dashboard'
-    | '/diner'
-    | '/kds'
+    | '/forgot-password'
     | '/login'
+    | '/manager'
+    | '/owner'
+    | '/register'
     | '/reserve'
+    | '/reset-password'
+    | '/staff'
     | '/t/$tableId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  CustomerRoute: typeof CustomerRoute
   DashboardRoute: typeof DashboardRoute
-  DinerRoute: typeof DinerRoute
-  KdsRoute: typeof KdsRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  ManagerRoute: typeof ManagerRoute
+  OwnerRoute: typeof OwnerRoute
+  RegisterRoute: typeof RegisterRoute
   ReserveRoute: typeof ReserveRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  StaffRoute: typeof StaffRoute
   TTableIdRoute: typeof TTableIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/reserve': {
-      id: '/reserve'
-      path: '/reserve'
-      fullPath: '/reserve'
-      preLoaderRoute: typeof ReserveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kds': {
-      id: '/kds'
-      path: '/kds'
-      fullPath: '/kds'
-      preLoaderRoute: typeof KdsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/diner': {
-      id: '/diner'
-      path: '/diner'
-      fullPath: '/diner'
-      preLoaderRoute: typeof DinerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -178,11 +215,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/customer': {
+      id: '/customer'
+      path: '/customer'
+      fullPath: '/customer'
+      preLoaderRoute: typeof CustomerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manager': {
+      id: '/manager'
+      path: '/manager'
+      fullPath: '/manager'
+      preLoaderRoute: typeof ManagerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/owner': {
+      id: '/owner'
+      path: '/owner'
+      fullPath: '/owner'
+      preLoaderRoute: typeof OwnerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reserve': {
+      id: '/reserve'
+      path: '/reserve'
+      fullPath: '/reserve'
+      preLoaderRoute: typeof ReserveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff': {
+      id: '/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof StaffRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/t/$tableId': {
@@ -198,13 +298,28 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  CustomerRoute: CustomerRoute,
   DashboardRoute: DashboardRoute,
-  DinerRoute: DinerRoute,
-  KdsRoute: KdsRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  ManagerRoute: ManagerRoute,
+  OwnerRoute: OwnerRoute,
+  RegisterRoute: RegisterRoute,
   ReserveRoute: ReserveRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  StaffRoute: StaffRoute,
   TTableIdRoute: TTableIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
