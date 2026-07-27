@@ -54,73 +54,12 @@ Rules:
     const promptText = `System Instructions:\n${completeSystemPrompt}\n\nUser Question:\n${data.question}`;
 
     try {
-      const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key=${key}`;
-      const listResp = await fetch(listUrl, { method: "GET" });
-      if (!listResp.ok) throw new Error(`Could not list models: HTTP ${listResp.status}`);
-      const listData = await listResp.json().catch(() => ({}));
+      // Optimization: Cache or hardcode the model name for the demo to reduce latency
+      const chosenModelName = "models/gemini-1.5-flash-latest";
+      const methodName = "generateContent";
 
-      function supportsMethod(model: any, method: string) {
-        return (
-          typeof model?.name === "string" &&
-          Array.isArray(model.supportedGenerationMethods) &&
-          model.supportedGenerationMethods.includes(method)
-        );
-      }
-
-      const models = Array.isArray(listData.models) ? listData.models : [];
-      const versionOf = (model: any) => {
-        const match = model.name.match(/^models\/gemini-(\d+)(?:\.(\d+))?-/);
-        return match ? [Number(match[1]), Number(match[2] ?? 0)] : [0, 0];
-      };
-      const preferredGeminiModels = models
-        .filter((m: any) => supportsMethod(m, "generateContent") && m.name.startsWith("models/gemini-"))
-        // The model list can include retired models. Prefer the newest Gemini
-        // family first (for example Gemini 3.6 over Gemini 2.5), then Flash for
-        // this latency-sensitive copilot use case.
-        .sort((a: any, b: any) => {
-          const [aMajor, aMinor] = versionOf(a);
-          const [bMajor, bMinor] = versionOf(b);
-          if (aMajor !== bMajor) return bMajor - aMajor;
-          if (aMinor !== bMinor) return bMinor - aMinor;
-          const aFlash = /-flash(?:-|$)/.test(a.name) ? 1 : 0;
-          const bFlash = /-flash(?:-|$)/.test(b.name) ? 1 : 0;
-          return bFlash - aFlash;
-        });
-
-      let chosenModel = preferredGeminiModels[0];
-      let methodName = "generateContent";
-
-      if (!chosenModel) {
-        // fallback: any model that supports generateContent
-        chosenModel = models.find((m: any) => supportsMethod(m, "generateContent"));
-      }
-
-      if (!chosenModel) {
-        // next fallback: try generateText
-        chosenModel = models.find((m: any) => supportsMethod(m, "generateText"));
-        methodName = "generateText";
-      }
-
-      if (!chosenModel) {
-        // next fallback: try generateMessage
-        chosenModel = models.find((m: any) => supportsMethod(m, "generateMessage"));
-        methodName = "generateMessage";
-      }
-
-      if (!chosenModel || !chosenModel.name) {
-        const available = models.map((m: any) => ({ name: m.name, methods: m.supportedGenerationMethods })).slice(0, 10);
-        throw new Error(
-          `No suitable model found that supports generateContent/generateText/generateMessage. Available (sample): ${JSON.stringify(available)}`
-        );
-      }
-
-      const url = `https://generativelanguage.googleapis.com/v1beta/${chosenModel.name}:${methodName}?key=${key}`;
-      const body: any =
-        methodName === "generateContent"
-          ? { contents: [{ parts: [{ text: promptText }] }] }
-          : methodName === "generateText"
-          ? { input: promptText }
-          : { messages: [{ author: "user", content: [{ type: "text", text: promptText }] }] };
+      const url = `https://generativelanguage.googleapis.com/v1beta/${chosenModelName}:${methodName}?key=${key}`;
+      const body: any = { contents: [{ parts: [{ text: promptText }] }] };
 
       const response = await fetch(url, {
         method: "POST",
@@ -131,8 +70,36 @@ Rules:
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+        // Fallback to dynamic model listing if the hardcoded one fails
+        const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key=${key}`;
+        const listResp = await fetch(listUrl, { method: "GET" });
+        if (!listResp.ok) throw new Error(`Could not list models: HTTP ${listResp.status}`);
+        const listData = await listResp.json().catch(() => ({}));
+        
+        function supportsMethod(model: any, method: string) {
+          return (
+            typeof model?.name === "string" &&
+            Array.isArray(model.supportedGenerationMethods) &&
+            model.supportedGenerationMethods.includes(method)
+          );
+        }
+
+        const models = Array.isArray(listData.models) ? listData.models : [];
+        const fallbackModel = models.find((m: any) => supportsMethod(m, "generateContent") && m.name.startsWith("models/gemini-"));
+        
+        if (!fallbackModel) throw new Error(`HTTP ${response.status} and no fallback model found.`);
+        
+        const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/${fallbackModel.name}:generateContent?key=${key}`;
+        const fallbackResponse = await fetch(fallbackUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        
+        if (!fallbackResponse.ok) throw new Error(`HTTP ${fallbackResponse.status}`);
+        const resData = await fallbackResponse.json();
+        const reply = resData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        return { text: reply?.trim() ?? "Empty response" };
       }
 
       const resData = await response.json();

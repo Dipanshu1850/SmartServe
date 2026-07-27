@@ -1,10 +1,12 @@
 import { useAnalytics } from "../hooks/useAnalytics";
 import { RevenueChart } from "./RevenueChart";
 import { PeakHoursChart } from "./PeakHoursChart";
+import { ProactiveInsights } from "./ProactiveInsights";
 
 function KpiCard({ label, value, delta }: { label: string; value: string; delta?: string }) {
   return (
-    <div className="bg-card border border-border rounded-2xl p-5">
+    <div className="bg-card border border-border rounded-2xl p-5 relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       <div className="text-[10px] font-mono uppercase tracking-widest text-muted">{label}</div>
       <div className="font-display italic text-3xl mt-2">{value}</div>
       {delta && <div className="text-[10px] font-mono text-accent mt-1">{delta}</div>}
@@ -17,6 +19,7 @@ export function Overview() {
 
   return (
     <div className="space-y-8">
+      <ProactiveInsights />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <KpiCard label="Revenue today" value="₹1,48,200" delta="↑ 12% vs last Sat" />
         <KpiCard label="Covers" value="128" delta="↑ 8%" />
