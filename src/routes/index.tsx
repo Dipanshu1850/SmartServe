@@ -267,7 +267,7 @@ function Landing() {
           </div>
           <div className="bg-card rounded-2xl p-6 shadow-sm border border-border space-y-6">
             <img
-              src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Restaurant%20ambiance%20preview%2C%20modern%20fine%20dining%20interior%2C%20warm%20lighting%2C%20professional%20photography&image_size=landscape_4_3"
+              src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80"
               alt="Restaurant ambiance preview"
               width={1024}
               height={768}

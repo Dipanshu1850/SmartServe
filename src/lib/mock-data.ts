@@ -18,7 +18,7 @@ export const MENU: MenuItem[] = [
     description: "Clay oven roasted cottage cheese, spices, bell peppers, mint chutney.",
     price: 320,
     category: "Starters",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Delicious%20Tandoori%20Paneer%20Tikka%2C%20grilled%20cottage%20cheese%20cubes%20with%20bell%20peppers%20and%20onions%2C%20served%20on%20a%20platter%20with%20mint%20chutney%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Tandoori Paneer Tikka
+    image: "https://images.unsplash.com/photo-1567337710282-00832b415979?auto=format&fit=crop&w=1200&q=80",
     tags: ["Veg", "GF", "Spicy"],
     available: 15,
     chefsChoice: true,
@@ -29,7 +29,7 @@ export const MENU: MenuItem[] = [
     description: "Tandoori chicken shreds, rich tomato-butter cream gravy, dry fenugreek.",
     price: 550,
     category: "Mains",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Authentic%20Indian%20Butter%20Chicken%2C%20creamy%20tomato%20gravy%20with%20tender%20chicken%20pieces%2C%20served%20in%20a%20traditional%20copper%20bowl%2C%20garnished%20with%20cream%20and%20coriander%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Classic Butter Chicken
+    image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=1200&q=80",
     tags: ["Signature", "Non-Veg"],
     available: 10,
     chefsChoice: true,
@@ -40,7 +40,7 @@ export const MENU: MenuItem[] = [
     description: "Garlic clay oven bread paired with 24-hour slow-cooked black lentils.",
     price: 380,
     category: "Mains",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Slow-cooked%20Dal%20Makhani%20in%20a%20black%20bowl%20paired%20with%20buttery%20Peshawari%20Naan%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Peshawari Naan & Dal Makhani
+    image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=1200&q=80",
     tags: ["Veg", "Popular"],
     available: 25,
   },
@@ -50,7 +50,7 @@ export const MENU: MenuItem[] = [
     description: "Traditional yogurt smoothie with Alphonso mango pulp and cardamom.",
     price: 180,
     category: "Drinks",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Refreshing%20Mango%20Lassi%20in%20a%20tall%20glass%2C%20garnished%20with%20saffron%20strands%20and%20pistachio%20bits%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Mango Lassi
+    image: "https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=1200&q=80",
     tags: ["Veg", "Cold"],
     available: 50,
   },
@@ -60,7 +60,7 @@ export const MENU: MenuItem[] = [
     description: "Clotted milk frozen dessert, saffron, pistachio, vermicelli.",
     price: 220,
     category: "Desserts",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Traditional%20Saffron%20Kulfi%20Falooda%20served%20in%20a%20glass%20bowl%2C%20clotted%20milk%20ice%20cream%20with%20vermicelli%2C%20rose%20syrup%20and%20nuts%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Saffron Kulfi Falooda
+    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80",
     tags: ["Veg", "Sweet"],
     available: 12,
   },
@@ -72,7 +72,7 @@ export const MENU: MenuItem[] = [
     description: "Wild mushroom, truffle butter, aged pecorino.",
     price: 480,
     category: "Mains",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Hand-Cut%20Tagliatelle%20with%20wild%20mushroom%2C%20truffle%20butter%2C%20aged%20pecorino%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Hand-Cut Tagliatelle
+    image: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1200&q=80",
     tags: ["Veg", "Signature"],
     available: 8,
   },
@@ -82,7 +82,7 @@ export const MENU: MenuItem[] = [
     description: "Charred lemon, salsa verde, fennel.",
     price: 750,
     category: "Mains",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Grilled%20Sea%20Bass%20with%20charred%20lemon%2C%20salsa%20verde%2C%20fennel%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Grilled Sea Bass
+    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=1200&q=80",
     tags: ["GF"],
     available: 5,
   },
@@ -92,7 +92,7 @@ export const MENU: MenuItem[] = [
     description: "Aged 45 days, rosemary jus, Maldon salt.",
     price: 1450,
     category: "Mains",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Wagyu%20Ribeye%20steak%2C%20aged%2045%20days%2C%20rosemary%20jus%2C%20Maldon%20salt%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Wagyu Ribeye
+    image: "https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=1200&q=80",
     tags: ["Signature"],
     available: 0,
   },
@@ -102,7 +102,7 @@ export const MENU: MenuItem[] = [
     description: "Sun-gold tomatoes, basil oil, sourdough.",
     price: 380,
     category: "Starters",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Heirloom%20Burrata%20with%20sun-gold%20tomatoes%2C%20basil%20oil%2C%20sourdough%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Heirloom Burrata
+    image: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?auto=format&fit=crop&w=1200&q=80",
     tags: ["Veg", "GF"],
     available: 12,
   },
@@ -112,7 +112,7 @@ export const MENU: MenuItem[] = [
     description: "Warm dark chocolate, vanilla bean gelato, berries.",
     price: 280,
     category: "Desserts",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Molten%20Chocolate%20cake%2C%20warm%20dark%20chocolate%2C%20vanilla%20bean%20gelato%2C%20berries%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Molten Chocolate
+    image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?auto=format&fit=crop&w=1200&q=80",
     tags: ["Veg"],
     available: 15,
   },
@@ -122,7 +122,7 @@ export const MENU: MenuItem[] = [
     description: "Bourbon, honey, lemon, aromatic bitters.",
     price: 350,
     category: "Drinks",
-    image: "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Amber%20Sour%20cocktail%2C%20bourbon%2C%20honey%2C%20lemon%2C%20aromatic%20bitters%2C%20professional%20food%20photography%2C%204k&image_size=landscape_4_3", // Amber Sour
+    image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1200&q=80",
     tags: ["21+"],
     available: 40,
   },
