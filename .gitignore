@@ -20,6 +20,7 @@ dist-ssr
 .wrangler/
 .dev.vars
 .vercel/
+.lovable/
 
 # Editor directories and files
 .vscode/*
