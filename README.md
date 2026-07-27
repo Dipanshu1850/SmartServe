@@ -4,6 +4,36 @@
   <strong>SmartServe</strong> is an AI-powered Restaurant Management System that streamlines restaurant operations by connecting customers, kitchen staff, and managers through a real-time order management platform.
 </p>
 
+<p align="center">
+  <a href="https://smart-serve-puce.vercel.app/">
+    <img alt="Live on Vercel" src="https://img.shields.io/badge/Live_on_Vercel-SmartServe-black?style=for-the-badge&logo=vercel&logoColor=white&labelColor=000000">
+  </a>
+  <a href="https://github.com/Dipanshu1850/SmartServe">
+    <img alt="GitHub Repo" src="https://img.shields.io/badge/GitHub-SmartServe-181717?style=for-the-badge&logo=github&logoColor=white">
+  </a>
+</p>
+
+---
+
+# 🌐 Hosted Application
+
+### 🚀 Live Demo
+**[smart-serve-puce.vercel.app](https://smart-serve-puce.vercel.app/)** · Deployed on Vercel · backed by Supabase PostgreSQL + Realtime + Google Gemini server-side AI.
+
+### 🧪 Explore All Personas — Quick-Start for Judges
+
+SmartServe ships role-based access control (RBAC) by default. Use the correct entry point depending on what you want to see:
+
+| Login flow | Role you get | What you can evaluate |
+|---|---|---|
+| **Sign in with Google OAuth** (or Email+Password signup) | Always → **`customer`** (hardened default) | Customer menu, cart, order placement, live order tracking, reservations, Customer AI Sommelier |
+| **Use **Demo Accounts** buttons on the `/login` page** | Instant sandbox access — pick: `Customer` · `Staff` · `Manager` · `Owner` | **All 4 dashboards** without any signup, DB access, or approval — kitchen queue kanban, table map, inventory, BI analytics, Owner fleet view, Ops Copilot in every role |
+
+> 🛡️ **RBAC guarantee** (Production): Anyone who authenticates via Google OAuth for the first time is automatically created as a **`customer`** only. Staff / Manager / Owner privileges are provisioned only by the Team Leader directly in Supabase. This prevents unauthorized access to internal ops dashboards in the live deployment.
+
+### 📂 GitHub Repository
+**[github.com/Dipanshu1850/SmartServe](https://github.com/Dipanshu1850/SmartServe)**
+
 ---
 
 # 👥 Team Information
@@ -79,7 +109,7 @@ Powered by **Supabase Auth** with verified industry-standard flows:
 - ✅ Email + Password authentication (with Supabase session management)
 - ✅ Google OAuth single-sign on (with profile auto-creation on first login)
 - ✅ Role-based access control (RBAC) with 4 roles: `customer`, `staff`, `manager`, `owner`
-- 🛡️ **Security Note**: All new sign-ups (Email/Google) default to the `customer` role. Admin/Staff privileges are strictly managed by the Team Leader (**Dipanshu Dhiman**) via the database to prevent unauthorized access.
+- 🛡️ **Security Note**: All new sign-ups default to the `customer` role — including anyone who signs in for the first time using **Google OAuth**. Admin/Staff/Manager/Owner privileges are strictly provisioned by the Team Leader (**Dipanshu Dhiman**) via the database to prevent unauthorized access to internal operations dashboards. To preview all 4 personas immediately without creating a real account, use the **Demo Accounts** buttons on the `/login` page (Sandbox Persona Explorer).
 - ✅ `RequireRole` route guard redirects unauthenticated users to `/login` with a `next` param for post-login return, and redirects wrong-role users back to their default dashboard
 - ✅ Granular permission matrix (`ROLE_PERMISSIONS`) with 18 capability flags covering view_menu through full_access
 - ✅ Automatic profile creation on signup with user_metadata from Google
@@ -201,15 +231,3 @@ AI tools were extensively used during the development lifecycle.
 - Code optimization
 - Documentation
 - Feature planning
-
----
-
-# 🌐 Hosted Application
-
-### 🚀 Live Demo
-
-https://smart-serve-puce.vercel.app/
-
-### 📂 GitHub Repository
-
-https://github.com/Dipanshu1850/SmartServe
