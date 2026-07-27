@@ -4,7 +4,7 @@ import { RevenueChart } from "@/features/manager/components/RevenueChart";
 import { PeakHoursChart } from "@/features/manager/components/PeakHoursChart";
 import { useAnalytics } from "@/features/manager/hooks/useAnalytics";
 import { OpsCopilot } from "@/features/ai/components/OpsCopilot";
-import { RESTAURANTS } from "@/lib/mock-data";
+import { RESTAURANTS, SALES_BY_DAY, HOURLY } from "@/lib/mock-data";
 import {
   TrendingUp,
   DollarSign,
@@ -62,9 +62,46 @@ export function OwnerDashboardPage() {
   }
 
   function downloadFinancialReport(title: string) {
-    const rows = ["Report,Period,Generated at", `"${title}","Q2 2026","${new Date().toISOString()}"`];
-    downloadTextFile(`${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.csv`, `${rows.join("\n")}\n`, "text/csv;charset=utf-8");
-    toast.success("CSV downloaded");
+    const csvCell = (v: string | number) => {
+      const s = String(v ?? "");
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const rows: string[] = [];
+    rows.push(["SmartServe Fleet Report", title, new Date().toISOString()].map(csvCell).join(","));
+    rows.push("");
+    rows.push(["--- Branch Performance ---"].map(csvCell).join(","));
+    rows.push(["Branch ID", "Restaurant", "City", "Monthly Revenue (INR)", "Occupancy %", "Status"].map(csvCell).join(","));
+    RESTAURANTS.forEach((r) => {
+      rows.push([r.id, r.name, r.city, String(r.monthly), String(r.occupancy), r.status].map(csvCell).join(","));
+    });
+    const totalMRR = RESTAURANTS.reduce((s, r) => s + r.monthly, 0);
+    const avgOcc = Math.round(RESTAURANTS.reduce((s, r) => s + r.occupancy, 0) / Math.max(1, RESTAURANTS.length));
+    rows.push("");
+    rows.push(["CONSOLIDATED TOTAL", "", "", String(totalMRR), String(avgOcc), "Fleet"].map(csvCell).join(","));
+    rows.push("");
+    rows.push(["--- Weekly Sales by Day (Head Office Benchmark) ---"].map(csvCell).join(","));
+    rows.push(["Day", "Revenue (INR)", "Covers"].map(csvCell).join(","));
+    SALES_BY_DAY.forEach((d) => {
+      rows.push([d.day, String(d.revenue), String(d.covers)].map(csvCell).join(","));
+    });
+    const revWeek = SALES_BY_DAY.reduce((s, d) => s + d.revenue, 0);
+    const coversWeek = SALES_BY_DAY.reduce((s, d) => s + d.covers, 0);
+    rows.push("");
+    rows.push(["WEEK TOTAL", "", String(revWeek), String(coversWeek)].map(csvCell).join(","));
+    rows.push("");
+    rows.push(["--- Peak Hourly Covers ---"].map(csvCell).join(","));
+    rows.push(["Hour", "Covers"].map(csvCell).join(","));
+    HOURLY.forEach((h) => rows.push([h.hr, String(h.covers)].map(csvCell).join(",")));
+    rows.push("");
+    rows.push(["--- Margin Targets ---"].map(csvCell).join(","));
+    rows.push(["Gross Profit %", "Labor Cost %", "COGS %"].map(csvCell).join(","));
+    rows.push(["68.2", "28.4", "31.8"].map(csvCell).join(","));
+    downloadTextFile(
+      `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.csv`,
+      rows.join("\n") + "\n",
+      "text/csv;charset=utf-8",
+    );
+    toast.success("CSV downloaded — " + RESTAURANTS.length + " branches included");
   }
 
   function saveSettings() {

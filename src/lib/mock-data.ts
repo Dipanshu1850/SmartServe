@@ -231,3 +231,21 @@ export const RESTAURANTS: Restaurant[] = [
   { id: "r5", name: "Olive & Ember", city: "Goa, GA", occupancy: 68, status: "busy", monthly: 1120000 },
   { id: "r6", name: "The Pass", city: "Chennai, TN", occupancy: 45, status: "live", monthly: 880000 },
 ];
+
+export type Reservation = {
+  id: string;
+  name: string;
+  party: number;
+  time: string;
+  status: "Pending" | "Arrived" | "Seated" | "Cancelled";
+  phone?: string;
+  notes?: string;
+};
+
+export const RESERVATIONS: Reservation[] = [
+  { id: "res-001", name: "Jae Min", party: 2, time: "6:30 PM", status: "Arrived", phone: "+91-98XXX-XX001", notes: "Anniversary dinner" },
+  { id: "res-002", name: "Priya Sharma", party: 4, time: "7:00 PM", status: "Seated", phone: "+91-98XXX-XX002" },
+  { id: "res-003", name: "Mark Gupta", party: 5, time: "7:30 PM", status: "Pending", phone: "+91-98XXX-XX003", notes: "Window seat preferred" },
+  { id: "res-004", name: "Devon Rao", party: 3, time: "8:00 PM", status: "Pending", phone: "+91-98XXX-XX004" },
+  { id: "res-005", name: "Ananya Iyer", party: 6, time: "8:30 PM", status: "Pending", phone: "+91-98XXX-XX005", notes: "Birthday celebration" },
+];

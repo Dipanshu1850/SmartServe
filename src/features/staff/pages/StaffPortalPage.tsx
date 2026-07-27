@@ -6,6 +6,7 @@ import { Column as KanbanColumn } from "../components/Column";
 import { TicketCard } from "../components/TicketCard";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useNotifications } from "@/features/notifications/hooks/useNotifications";
+import { useLifecycleNotifications } from "@/features/notifications/hooks/useLifecycleNotifications";
 import { realtimeService } from "@/features/services/realtime.service";
 import { TABLES, type Table } from "@/lib/mock-data";
 import {
@@ -37,6 +38,7 @@ const TABS = [
 export function StaffPortalPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("kitchen");
+  useLifecycleNotifications("staff");
 
   // Staff hooks state
   const {

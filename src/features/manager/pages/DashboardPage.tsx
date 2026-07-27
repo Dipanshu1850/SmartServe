@@ -6,6 +6,7 @@ import { TablesMap } from "../components/TablesMap";
 import { InventoryTable } from "../components/InventoryTable";
 import { OpsCopilot } from "@/features/ai/components/OpsCopilot";
 import { useNotifications } from "@/features/notifications/hooks/useNotifications";
+import { useLifecycleNotifications } from "@/features/notifications/hooks/useLifecycleNotifications";
 import { RevenueChart } from "../components/RevenueChart";
 import { PeakHoursChart } from "../components/PeakHoursChart";
 import { useAnalytics } from "../hooks/useAnalytics";
@@ -27,6 +28,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { downloadTextFile, loadStored, saveStored } from "@/lib/browser-storage";
+import { SALES_BY_DAY, ORDERS, INVENTORY, TOP_ITEMS, HOURLY, TABLES } from "@/lib/mock-data";
+import { computeManagerKpis } from "../lib/manager-metrics";
 
 const TABS = [
   { id: "overview", label: "Business Overview", icon: TrendingUp },
@@ -47,6 +50,7 @@ const TABS = [
 export function DashboardPage() {
   const [activeTab, setActiveTab] = useState<string>("overview");
   const { salesByDay, hourly } = useAnalytics();
+  useLifecycleNotifications("manager");
 
   // Real-time table listener
   const [tableAlerts, setTableAlerts] = useState<string[]>([]);
@@ -84,12 +88,64 @@ export function DashboardPage() {
   );
 
   function exportReport(title: string, description: string) {
+    const kpis = computeManagerKpis();
+    const csvCell = (v: string | number) => {
+      const s = String(v ?? "");
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const rows: string[] = [];
+    rows.push(["SmartServe Operations Report", title, new Date().toISOString()].map(csvCell).join(","));
+    rows.push([description].map(csvCell).join(","));
+    rows.push("");
+    rows.push(["--- Shift KPI Summary ---"].map(csvCell).join(","));
+    rows.push(["Metric", "Value", "Delta"].map(csvCell).join(","));
+    rows.push(["Revenue Today", kpis.revenueTodayFormatted, kpis.revenueDelta].map(csvCell).join(","));
+    rows.push(["Covers Today", String(kpis.coversToday), kpis.coversDelta].map(csvCell).join(","));
+    rows.push(["Avg Ticket", kpis.avgTicketFormatted, ""].map(csvCell).join(","));
+    rows.push(["Turn Time", kpis.turnTime, kpis.turnDelta].map(csvCell).join(","));
+    rows.push(["Revenue Week", kpis.revenueWeekFormatted, kpis.revWowDelta].map(csvCell).join(","));
+    rows.push(["Reservations Today", String(kpis.reservationsToday), ""].map(csvCell).join(","));
+    rows.push(["Active Orders", String(kpis.activeOrders), ""].map(csvCell).join(","));
+    rows.push(["Occupied Tables", `${kpis.occupiedTables}/${kpis.totalTables}`, ""].map(csvCell).join(","));
+    rows.push("");
+    rows.push(["--- Top Items Sold ---"].map(csvCell).join(","));
+    rows.push(["Rank", "Item", "Qty Sold"].map(csvCell).join(","));
+    [...TOP_ITEMS].sort((a, b) => b.sold - a.sold).forEach((t, i) => {
+      rows.push([String(i + 1), t.name, String(t.sold)].map(csvCell).join(","));
+    });
+    rows.push("");
+    rows.push(["--- Inventory Snapshot ---"].map(csvCell).join(","));
+    rows.push(["SKU", "On Hand", "Unit", "Reorder At", "Supplier", "Status"].map(csvCell).join(","));
+    INVENTORY.forEach((i) => {
+      rows.push([i.name, String(i.qty), i.unit, String(i.reorderAt), i.supplier, i.qty < i.reorderAt ? "LOW" : "OK"].map(csvCell).join(","));
+    });
+    rows.push("");
+    rows.push(["--- Active Orders ---"].map(csvCell).join(","));
+    rows.push(["Order ID", "Table", "Status", "Min Elapsed", "Items", "Total (INR)"].map(csvCell).join(","));
+    ORDERS.forEach((o) => {
+      rows.push([
+        o.id,
+        o.table,
+        o.status,
+        String(o.minutes),
+        String(o.items.reduce((s, it) => s + it.qty, 0)),
+        String(o.total),
+      ].map(csvCell).join(","));
+    });
+    rows.push("");
+    rows.push(["--- Weekly Sales ---"].map(csvCell).join(","));
+    rows.push(["Day", "Revenue (INR)", "Covers"].map(csvCell).join(","));
+    SALES_BY_DAY.forEach((d) => rows.push([d.day, String(d.revenue), String(d.covers)].map(csvCell).join(",")));
+    rows.push("");
+    rows.push(["--- Table Status Summary ---"].map(csvCell).join(","));
+    rows.push(["Table", "Seats", "Status"].map(csvCell).join(","));
+    TABLES.forEach((t) => rows.push([t.id, String(t.seats), t.status].map(csvCell).join(",")));
     downloadTextFile(
       `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.csv`,
-      `Report,Description,Exported at\n"${title}","${description}","${new Date().toISOString()}"\n`,
+      rows.join("\n") + "\n",
       "text/csv;charset=utf-8",
     );
-    toast.success("Report downloaded");
+    toast.success("Report downloaded — " + ORDERS.length + " orders, " + INVENTORY.length + " SKUs");
   }
 
   function saveSettings() {

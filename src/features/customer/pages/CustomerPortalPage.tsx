@@ -4,6 +4,7 @@ import { DashboardLayout } from "@/features/shared/components/DashboardLayout";
 import { useCustomer, CATEGORIES } from "../hooks/useCustomer";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useNotifications } from "@/features/notifications/hooks/useNotifications";
+import { useLifecycleNotifications } from "@/features/notifications/hooks/useLifecycleNotifications";
 import { ReserveForm } from "@/features/reservations/components/ReserveForm";
 import { ReservationList } from "@/features/reservations/components/ReservationList";
 import { ReservationService } from "@/features/reservations/services/reservation.service";
@@ -41,6 +42,7 @@ const TABS = [
 export function CustomerPortalPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("home");
+  useLifecycleNotifications("customer");
 
   // Customer hooks state
   const {

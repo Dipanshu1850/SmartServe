@@ -1,11 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { COPILOT_SYSTEM_PROMPT } from "../prompts/copilot.prompt";
-import { MENU, ORDERS, TABLES } from "@/lib/mock-data";
+import { MENU, ORDERS, TABLES, INVENTORY, TOP_ITEMS, SALES_BY_DAY, HOURLY, RESERVATIONS } from "@/lib/mock-data";
 
 const Input = z.object({
   question: z.string().min(1).max(500),
   role: z.enum(["customer", "staff", "manager", "owner"]).optional(),
+});
+
+const InventoryInput = z.object({
+  itemId: z.string().min(1).max(50),
 });
 
 const ROLE_PROMPTS: Record<string, string> = {
@@ -15,10 +19,119 @@ const ROLE_PROMPTS: Record<string, string> = {
   owner: "You are the Strategic Executive Advisor. Help analyze monthly revenue, profitability margins, multi-branch comparisons, labor percentages, and marketing campaign outcomes. Be professional, financial-savvy, and growth-oriented.",
 };
 
+function loadGeminiKey() {
+  const key = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+  return key || null;
+}
+
+async function callGeminiGenerateText({
+  key,
+  promptText,
+  jsonMode,
+}: {
+  key: string;
+  promptText: string;
+  jsonMode?: boolean;
+}): Promise<string> {
+  const modelsToTry = [
+    "models/gemini-3.6-flash",
+    "models/gemini-3.5-flash",
+    "models/gemini-3.5-flash-lite",
+    "models/gemini-3.1-flash-lite",
+  ];
+
+  let lastErr: unknown = null;
+
+  for (const modelName of modelsToTry) {
+    const url = `https://generativelanguage.googleapis.com/v1/${modelName}:generateContent?key=${key}`;
+    const parts = jsonMode
+      ? [
+          { text: promptText + "\n\nCRITICAL OUTPUT RULE: Respond with ONLY valid JSON. No markdown code fences. No prose before or after the JSON. No explanatory text. Just parseable JSON text content." },
+        ]
+      : [{ text: promptText }];
+    const body: any = {
+      contents: [{ parts }],
+      ...(jsonMode ? { response_mime_type: "application/json" } : {}),
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        lastErr = new Error(`HTTP ${response.status} on ${modelName}`);
+        continue;
+      }
+
+      const resData = await response.json();
+      const reply =
+        resData?.candidates?.[0]?.content?.parts?.[0]?.text ??
+        resData?.candidates?.[0]?.output?.[0]?.content?.[0]?.text ??
+        resData?.output?.[0]?.content?.[0]?.text ??
+        resData?.message?.content?.[0]?.text ??
+        resData?.text;
+      if (typeof reply === "string" && reply.trim().length > 0) return reply.trim();
+    } catch (err) {
+      lastErr = err;
+      continue;
+    }
+  }
+
+  // Final fallback: try list models
+  try {
+    const listUrl = `https://generativelanguage.googleapis.com/v1/models?pageSize=1000&key=${key}`;
+    const listResp = await fetch(listUrl, { method: "GET" });
+    if (listResp.ok) {
+      const listData = await listResp.json().catch(() => ({}));
+      const candidates = Array.isArray(listData.models) ? listData.models : [];
+      for (const m of candidates) {
+        const name = String(m?.name || "");
+        if (!name.startsWith("models/gemini-")) continue;
+        const supported = Array.isArray(m?.supportedGenerationMethods) ? m.supportedGenerationMethods : [];
+        if (!supported.includes("generateContent")) continue;
+        const url = `https://generativelanguage.googleapis.com/v1/${name}:generateContent?key=${key}`;
+        const parts = jsonMode
+          ? [
+              { text: promptText + "\n\nCRITICAL OUTPUT RULE: Respond with ONLY valid JSON. No markdown code fences. No prose before or after the JSON. No explanatory text. Just parseable JSON text content." },
+            ]
+          : [{ text: promptText }];
+        const body = {
+          contents: [{ parts }],
+          ...(jsonMode ? { response_mime_type: "application/json" } : {}),
+        };
+        const resp = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (!resp.ok) continue;
+        const resData = await resp.json().catch(() => ({}));
+        const reply = resData?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (typeof reply === "string" && reply.trim().length > 0) return reply.trim();
+      }
+    }
+  } catch (err) {
+    lastErr = err;
+  }
+
+  throw lastErr instanceof Error ? lastErr : new Error("Gemini call failed across all models");
+}
+
+function stripFences(s: string) {
+  return s
+    .replace(/^\uFEFF/, "")
+    .replace(/^```(?:json|JSON)?\s*/i, "")
+    .replace(/```$/, "")
+    .trim();
+}
+
 export const askCopilot = createServerFn({ method: "POST" })
   .inputValidator((v: unknown) => Input.parse(v))
   .handler(async ({ data }) => {
-    const key = process.env.GEMINI_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+    const key = loadGeminiKey();
     if (!key) {
       return { text: "AI Copilot is not configured. Please add GEMINI_API_KEY or VITE_GEMINI_API_KEY in your environment configuration (.env.local)." };
     }
@@ -54,75 +167,168 @@ Rules:
     const promptText = `System Instructions:\n${completeSystemPrompt}\n\nUser Question:\n${data.question}`;
 
     try {
-      const chosenModelName = "models/gemini-3.6-flash";
-      const methodName = "generateContent";
-
-      const url = `https://generativelanguage.googleapis.com/v1/${chosenModelName}:${methodName}?key=${key}`;
-      const body: any = { contents: [{ parts: [{ text: promptText }] }] };
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        // Fallback: list models using stable v1 endpoint, pick first GA gemini flash that supports generateContent
-        const listUrl = `https://generativelanguage.googleapis.com/v1/models?pageSize=1000&key=${key}`;
-        const listResp = await fetch(listUrl, { method: "GET" });
-        if (!listResp.ok) throw new Error(`Could not list models: HTTP ${listResp.status}`);
-        const listData = await listResp.json().catch(() => ({}));
-        
-        function supportsMethod(model: any, method: string) {
-          return (
-            typeof model?.name === "string" &&
-            Array.isArray(model.supportedGenerationMethods) &&
-            model.supportedGenerationMethods.includes(method)
-          );
-        }
-
-        const models = Array.isArray(listData.models) ? listData.models : [];
-        const fallbackModel = models.find((m: any) => supportsMethod(m, "generateContent") && m.name === "models/gemini-3.5-flash") ||
-          models.find((m: any) => supportsMethod(m, "generateContent") && m.name === "models/gemini-3.5-flash-lite") ||
-          models.find((m: any) => supportsMethod(m, "generateContent") && m.name === "models/gemini-3.1-flash-lite") ||
-          models.find((m: any) => supportsMethod(m, "generateContent") && m.name.startsWith("models/gemini-3.")) ||
-          models.find((m: any) => supportsMethod(m, "generateContent") && m.name.startsWith("models/gemini-"));
-        
-        if (!fallbackModel) throw new Error(`HTTP ${response.status} and no fallback model found.`);
-        
-        const fallbackUrl = `https://generativelanguage.googleapis.com/v1/${fallbackModel.name}:generateContent?key=${key}`;
-        const fallbackResponse = await fetch(fallbackUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        
-        if (!fallbackResponse.ok) throw new Error(`HTTP ${fallbackResponse.status}`);
-        const resData = await fallbackResponse.json();
-        const reply = resData?.candidates?.[0]?.content?.parts?.[0]?.text;
-        return { text: reply?.trim() ?? "Empty response" };
-      }
-
-      const resData = await response.json();
-
-      const reply =
-        resData?.candidates?.[0]?.content?.parts?.[0]?.text ??
-        resData?.candidates?.[0]?.output?.[0]?.content?.[0]?.text ??
-        resData?.output?.[0]?.content?.[0]?.text ??
-        resData?.message?.content?.[0]?.text ??
-        resData?.text ??
-        undefined;
-
-      if (!reply) {
-        throw new Error("Empty response from Gemini API");
-      }
-
-      return { text: reply.trim() };
+      const reply = await callGeminiGenerateText({ key, promptText });
+      return { text: reply };
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       if (msg.includes("429")) return { text: "Gemini API rate limit hit — try again in a few seconds." };
       return { text: `Gemini API error: ${msg}` };
+    }
+  });
+
+export type InventorySuggestion = {
+  itemId: string;
+  name: string;
+  supplier: string;
+  suggestedQty: number;
+  unit: string;
+  urgency: "Low" | "Medium" | "High" | "Critical";
+  reason: string;
+  etaDays: number;
+};
+
+export const inventorySuggestReorder = createServerFn({ method: "POST" })
+  .inputValidator((v: unknown) => InventoryInput.parse(v))
+  .handler(async ({ data }) => {
+    const key = loadGeminiKey();
+    const item = INVENTORY.find((i) => i.id === data.itemId);
+    if (!item) return { error: "Item not found" };
+
+    // Always provide a deterministic fallback so UI never shows "AI loading" forever
+    const fallback: InventorySuggestion = {
+      itemId: item.id,
+      name: item.name,
+      supplier: item.supplier,
+      unit: item.unit,
+      suggestedQty: Math.max(
+        item.reorderAt * 2,
+        item.reorderAt * 2 - item.qty > 0 ? Math.round(item.reorderAt * 2 - item.qty + item.reorderAt) : item.reorderAt * 2,
+      ),
+      urgency:
+        item.qty === 0 ? "Critical" : item.qty < item.reorderAt / 2 ? "High" : item.qty < item.reorderAt ? "Medium" : "Low",
+      reason: `${item.qty} ${item.unit} on hand vs reorder threshold ${item.reorderAt} ${item.unit}. Reordering ${Math.round(item.reorderAt * 2)} ${item.unit} covers ~2 weeks of typical throughput.`,
+      etaDays: 3,
+    };
+
+    if (!key) return { ...fallback, note: "AI key not set (deterministic suggestion)" };
+
+    try {
+      const recentOrders = ORDERS.map((o) => `${o.id} x${o.items.reduce((s, l) => s + l.qty, 0)}`).join(", ");
+      const last7 = SALES_BY_DAY.map((d) => `${d.day} INR${d.revenue}`).join(", ");
+      const prompt = `You are an inventory procurement AI for a fine-dining restaurant. Analyze the following SKU and surrounding context, then output a single strict JSON object matching this schema:
+{
+  "itemId": string,
+  "name": string,
+  "supplier": string,
+  "suggestedQty": number,
+  "unit": string,
+  "urgency": "Low" | "Medium" | "High" | "Critical",
+  "reason": string,
+  "etaDays": number
+}
+
+Context:
+SKU: ${JSON.stringify(item)}
+Entire on-hand inventory snapshot (for cross-referencing typical holding cost):
+${JSON.stringify(INVENTORY)}
+Recent 7-day revenue: ${last7}
+Active orders count: ${ORDERS.length} (${recentOrders})
+Top items sold trend: ${JSON.stringify(TOP_ITEMS)}
+
+Return ONLY JSON. No fences. No extra words.`;
+
+      const text = await callGeminiGenerateText({ key, promptText: prompt, jsonMode: true });
+      const parsed = JSON.parse(stripFences(text));
+      const out: InventorySuggestion = {
+        itemId: String(parsed.itemId ?? item.id),
+        name: String(parsed.name ?? item.name),
+        supplier: String(parsed.supplier ?? item.supplier),
+        suggestedQty: typeof parsed.suggestedQty === "number" ? parsed.suggestedQty : fallback.suggestedQty,
+        unit: String(parsed.unit ?? item.unit),
+        urgency: ["Low", "Medium", "High", "Critical"].includes(String(parsed.urgency))
+          ? (parsed.urgency as InventorySuggestion["urgency"])
+          : fallback.urgency,
+        reason: String(parsed.reason ?? fallback.reason),
+        etaDays: typeof parsed.etaDays === "number" ? parsed.etaDays : 3,
+      };
+      return out;
+    } catch (err) {
+      return { ...fallback, note: err instanceof Error ? `Fallback (AI: ${err.message})` : "Fallback" };
+    }
+  });
+
+export type ManagerInsight = {
+  title: string;
+  message: string;
+  type: "info" | "success" | "warning";
+  icon: "trending-up" | "alert" | "sparkle" | "clock";
+};
+
+export const managerDailyInsights = createServerFn({ method: "POST" })
+  .inputValidator((v: unknown) => ({} as any))
+  .handler(async () => {
+    const key = loadGeminiKey();
+    const fallback: ManagerInsight[] = [
+      {
+        title: "Demand Forecast",
+        message: "Saturday 7–9 PM peak predicted above baseline. Recommend +2 floor staff to keep turn time under 45m.",
+        type: "info",
+        icon: "trending-up",
+      },
+      {
+        title: "Inventory Alert",
+        message: `${INVENTORY[0].name} stock critical (${INVENTORY[0].qty} ${INVENTORY[0].unit}). Suggested reorder: ${INVENTORY[0].reorderAt * 2} ${INVENTORY[0].unit} from ${INVENTORY[0].supplier}.`,
+        type: "warning",
+        icon: "alert",
+      },
+      {
+        title: "Upsell Opportunity",
+        message: `${TOP_ITEMS[0].name} is the #1 item tonight. Train servers to pair with Mango Lassi — observed +22% ticket lift elsewhere.`,
+        type: "success",
+        icon: "sparkle",
+      },
+    ];
+
+    if (!key) return { cards: fallback, note: "AI key not set (deterministic insights)" };
+
+    try {
+      const snapshot = JSON.stringify({
+        orders: ORDERS.map((o) => ({ id: o.id, table: o.table, total: o.total, status: o.status, minutes: o.minutes, items: o.items.length })),
+        inventory: INVENTORY.map((i) => ({ id: i.id, name: i.name, qty: i.qty, reorderAt: i.reorderAt, supplier: i.supplier, unit: i.unit })),
+        tables: TABLES.map((t) => ({ id: t.id, status: t.status, seats: t.seats })),
+        salesByDay: SALES_BY_DAY,
+        hourly: HOURLY,
+        reservations: RESERVATIONS,
+        topItems: TOP_ITEMS,
+      });
+
+      const prompt = `You are a Senior Restaurant Operations Analyst AI. Based on today's live operations snapshot below, output a single strict JSON array of exactly 3 high-impact manager insights. Each insight is an object:
+{
+  "title": string (max 30 chars),
+  "message": string (max 240 chars),
+  "type": "info" | "success" | "warning",
+  "icon": "trending-up" | "alert" | "sparkle" | "clock"
+}
+
+Pick 3 distinct areas: (1) Demand forecast — tonight's peak + staff recommendation, (2) Inventory — most at-risk SKU with specific reorder suggestion, (3) Upsell/guest experience — a concrete server-briefable action tied to actual top-items data. Be specific and actionable. No generic advice. Cite numbers from the snapshot.
+
+Operations snapshot:
+${snapshot}
+
+Return ONLY a valid JSON array of 3 objects. No markdown fences. No prose. No prefix or suffix text.`;
+
+      const text = await callGeminiGenerateText({ key, promptText: prompt, jsonMode: true });
+      const raw = JSON.parse(stripFences(text));
+      const rawArr = Array.isArray(raw) ? raw : raw.insights ?? raw.cards ?? [];
+      const cards: ManagerInsight[] = rawArr.slice(0, 3).map((o: any) => ({
+        title: String(o.title || "Insight").slice(0, 50),
+        message: String(o.message || "").slice(0, 260),
+        type: ["info", "success", "warning"].includes(String(o.type)) ? (o.type as ManagerInsight["type"]) : "info",
+        icon: ["trending-up", "alert", "sparkle", "clock"].includes(String(o.icon)) ? (o.icon as ManagerInsight["icon"]) : "sparkle",
+      }));
+      if (cards.length < 3) return { cards: fallback, note: "Fallback (AI returned < 3 cards)" };
+      return { cards };
+    } catch (err) {
+      return { cards: fallback, note: err instanceof Error ? `Fallback (AI: ${err.message})` : "Fallback" };
     }
   });
