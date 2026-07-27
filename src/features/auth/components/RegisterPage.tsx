@@ -2,15 +2,10 @@ import { useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { AuthService, ProfileService } from "../services/auth.service";
-import { type Role } from "../types/auth.types";
+import { type Role, DEFAULT_DASHBOARDS } from "../types/auth.types";
 import { toast } from "sonner";
 
-const ROLE_ROUTES: Record<Role, string> = {
-  customer: "/customer",
-  staff: "/staff",
-  manager: "/manager",
-  owner: "/owner",
-};
+const ROLE_ROUTES = DEFAULT_DASHBOARDS;
 
 export function RegisterPage() {
   const navigate = useNavigate();

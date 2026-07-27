@@ -72,6 +72,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (DemoService.isDemoSession()) return;
 
       if (session?.user) {
+        if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+          setLoading(true);
+        }
         await handleUserSession(session.user);
       } else {
         setUser(null);
