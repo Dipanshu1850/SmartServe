@@ -12,10 +12,13 @@
 **VibesForReal**
 
 ### Team Members
-- 👑 Dipanshu Dhiman *(Team Leader)*
-- Komal Sharma
-- Jayant
-- Rahul Singh
+
+| Member | GitHub |
+|--------|--------|
+| 👑 **Dipanshu Dhiman** (Team Leader) | [![Dipanshu1850](https://img.shields.io/badge/Dipanshu1850-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Dipanshu1850) |
+| **Komal Sharma** | [![Komal-Sharma07](https://img.shields.io/badge/Komal--Sharma07-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Komal-Sharma07) |
+| **Jayant** | [![money-xr](https://img.shields.io/badge/money--xr-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/money-xr) |
+| **Rahul Singh** | [![Rahul121466](https://img.shields.io/badge/Rahul121466-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Rahul121466) |
 
 ### Hackathon
 **Vibeathon 6.0**
