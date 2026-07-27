@@ -1,8 +1,16 @@
 import { useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
-import { AuthService } from "../services/auth.service";
+import { AuthService, ProfileService } from "../services/auth.service";
+import { type Role } from "../types/auth.types";
 import { toast } from "sonner";
+
+const ROLE_ROUTES: Record<Role, string> = {
+  customer: "/customer",
+  staff: "/staff",
+  manager: "/manager",
+  owner: "/owner",
+};
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -37,11 +45,15 @@ export function RegisterPage() {
 
     setLoading(true);
     try {
-      await AuthService.signUp(email.trim(), password, fullName.trim(), phone.trim() || undefined);
+      const user = await AuthService.signUp(email.trim(), password, fullName.trim(), phone.trim() || undefined);
+      const profile = await ProfileService.getProfile(user.id);
+      const role = (profile?.role ?? "customer") as Role;
+      const target = ROLE_ROUTES[role] ?? "/customer";
+
       toast.success("Account created successfully!", {
-        description: "You have been registered as a customer."
+        description: `Redirecting to your ${role} workspace.`
       });
-      navigate({ to: "/login" as any });
+      navigate({ to: target as never });
     } catch (err: any) {
       setError(err.message || "An error occurred during registration");
       toast.error("Registration failed", { description: err.message });

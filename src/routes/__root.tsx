@@ -11,7 +11,7 @@ import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { reportSmartServeError } from "../lib/smartserve-error-reporting";
 import { AuthProvider } from "../features/auth/components/AuthProvider";
 
 function NotFoundComponent() {
@@ -40,7 +40,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportSmartServeError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
@@ -79,19 +79,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SmartServe — Smart Restaurant OS" },
+      { title: "SmartServe" },
       {
         name: "description",
-        content:
-          "SmartServe is the intelligent restaurant OS: live availability, smart queues, and an AI ops copilot.",
+        content: "SmartServe – AI-Powered Restaurant Management System",
       },
       { name: "author", content: "SmartServe" },
+      { name: "application-name", content: "SmartServe" },
+      { name: "apple-mobile-web-app-title", content: "SmartServe" },
+      { name: "theme-color", content: "#09090b" },
+      { property: "og:title", content: "SmartServe" },
+      { property: "og:description", content: "SmartServe – AI-Powered Restaurant Management System" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "SmartServe" },
+      { name: "twitter:description", content: "SmartServe – AI-Powered Restaurant Management System" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/favicon.svg" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
