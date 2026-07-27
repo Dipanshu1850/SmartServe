@@ -6,19 +6,28 @@ import { type Order } from "@/features/orders/types/order.types";
 
 export const CATEGORIES = ["Starters", "Mains", "Desserts", "Drinks"] as const;
 const ACTIVE_ORDER_STORAGE_KEY = "smartserve:active-order";
+const ANON_CUSTOMER_ID_KEY = "smartserve:anon-customer-id";
 
 function getStoredActiveOrders(): Order[] {
   if (typeof window === "undefined") return [];
 
   try {
     const stored = JSON.parse(window.localStorage.getItem(ACTIVE_ORDER_STORAGE_KEY) ?? "[]") as Order | Order[];
-    // Accept the former single-order storage shape so existing active orders
-    // survive this update as well.
     const orders = Array.isArray(stored) ? stored : stored?.id ? [stored] : [];
     return orders.filter((order) => order?.id && order.status !== "served");
   } catch {
     return [];
   }
+}
+
+function getOrCreateAnonCustomerId(): string {
+  if (typeof window === "undefined") return "anon-server";
+  let id = window.localStorage.getItem(ANON_CUSTOMER_ID_KEY);
+  if (!id) {
+    id = `anon-${Math.random().toString(36).slice(2, 10)}-${Date.now().toString(36)}`;
+    window.localStorage.setItem(ANON_CUSTOMER_ID_KEY, id);
+  }
+  return id;
 }
 
 export function useCustomer() {
@@ -70,14 +79,11 @@ export function useCustomer() {
 
   function place() {
     if (cartLines.length === 0) return;
-    if (!user) {
-      toast.error("Please sign in before placing an order.");
-      return;
-    }
+    const customerId = getOrCreateAnonCustomerId();
     const order: Order = {
       id: `ORD-${Date.now().toString().slice(-6)}`,
       table: "T-15",
-      customerId: user.id,
+      customerId,
       items: cartLines.map((item) => ({ name: item.name, qty: item.qty })),
       status: "queued",
       minutes: 0,

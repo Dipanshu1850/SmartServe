@@ -205,7 +205,7 @@ function Landing() {
               Explore Role Dashboards →
             </a>
             <Link
-              to="/dashboard"
+              to="/manager"
               className="px-5 py-3 border border-border rounded-full text-xs font-mono uppercase tracking-widest hover:bg-foreground/5 transition-colors"
             >
               Open Operations Console
@@ -657,7 +657,7 @@ function Landing() {
                 Owner Dashboard →
               </Link>
               <Link
-                to="/admin"
+                to="/owner"
                 className="px-6 py-3 bg-primary text-primary-foreground font-mono text-[10px] uppercase tracking-widest rounded hover:opacity-90 transition-opacity"
               >
                 Global Console →

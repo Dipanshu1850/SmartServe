@@ -69,6 +69,6 @@ export function hasPermission(user: User | null, permission: Permission): boolea
 export const DEFAULT_DASHBOARDS: Record<Role, string> = {
   customer: "/customer",
   staff: "/staff",
-  manager: "/dashboard",
-  owner: "/admin",
+  manager: "/manager",
+  owner: "/owner",
 };
