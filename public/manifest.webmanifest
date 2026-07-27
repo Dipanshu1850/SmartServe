@@ -1,7 +1,7 @@
 {
   "name": "SmartServe",
   "short_name": "SmartServe",
-  "description": "SmartServe – AI-Powered Restaurant Management System",
+  "description": "SmartServe – AI Operating System for Modern Restaurants",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#09090b",

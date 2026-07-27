@@ -76,7 +76,6 @@ AI tools were extensively used during the development lifecycle.
 
 ### Tools Used
 - ChatGPT
-- Lovable
 - Claude
 - Cursor
 - GitHub Copilot
@@ -136,7 +135,6 @@ npm run dev
 
 <p align="center">
   <img src="https://img.shields.io/badge/ChatGPT-74AA9C?style=for-the-badge&logo=openai&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Lovable-FF4F8B?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Claude-D97757?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Cursor-000000?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white"/>

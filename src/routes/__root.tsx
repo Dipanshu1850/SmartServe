@@ -79,21 +79,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SmartServe" },
+      { title: "SmartServe — AI Operating System for Modern Restaurants" },
       {
         name: "description",
-        content: "SmartServe – AI-Powered Restaurant Management System",
+        content:
+          "SmartServe is an AI-powered, real-time restaurant operating system with role-based dashboards, business intelligence, and predictive analytics.",
       },
       { name: "author", content: "SmartServe" },
       { name: "application-name", content: "SmartServe" },
       { name: "apple-mobile-web-app-title", content: "SmartServe" },
       { name: "theme-color", content: "#09090b" },
-      { property: "og:title", content: "SmartServe" },
-      { property: "og:description", content: "SmartServe – AI-Powered Restaurant Management System" },
+      { property: "og:title", content: "SmartServe — AI Restaurant Operating System" },
+      {
+        property: "og:description",
+        content:
+          "Real-time operations, business intelligence, and predictive analytics for modern restaurants.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "SmartServe" },
-      { name: "twitter:description", content: "SmartServe – AI-Powered Restaurant Management System" },
+      { name: "twitter:title", content: "SmartServe — AI Restaurant Operating System" },
+      {
+        name: "twitter:description",
+        content:
+          "AI-powered real-time restaurant OS with multi-role dashboards and proactive operations intelligence.",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
