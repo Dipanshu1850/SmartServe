@@ -54,11 +54,10 @@ Rules:
     const promptText = `System Instructions:\n${completeSystemPrompt}\n\nUser Question:\n${data.question}`;
 
     try {
-      // Optimization: Cache or hardcode the model name for the demo to reduce latency
-      const chosenModelName = "models/gemini-1.5-flash-latest";
+      const chosenModelName = "models/gemini-3.6-flash";
       const methodName = "generateContent";
 
-      const url = `https://generativelanguage.googleapis.com/v1beta/${chosenModelName}:${methodName}?key=${key}`;
+      const url = `https://generativelanguage.googleapis.com/v1/${chosenModelName}:${methodName}?key=${key}`;
       const body: any = { contents: [{ parts: [{ text: promptText }] }] };
 
       const response = await fetch(url, {
@@ -70,8 +69,8 @@ Rules:
       });
 
       if (!response.ok) {
-        // Fallback to dynamic model listing if the hardcoded one fails
-        const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000&key=${key}`;
+        // Fallback: list models using stable v1 endpoint, pick first GA gemini flash that supports generateContent
+        const listUrl = `https://generativelanguage.googleapis.com/v1/models?pageSize=1000&key=${key}`;
         const listResp = await fetch(listUrl, { method: "GET" });
         if (!listResp.ok) throw new Error(`Could not list models: HTTP ${listResp.status}`);
         const listData = await listResp.json().catch(() => ({}));
@@ -85,11 +84,15 @@ Rules:
         }
 
         const models = Array.isArray(listData.models) ? listData.models : [];
-        const fallbackModel = models.find((m: any) => supportsMethod(m, "generateContent") && m.name.startsWith("models/gemini-"));
+        const fallbackModel = models.find((m: any) => supportsMethod(m, "generateContent") && m.name === "models/gemini-3.5-flash") ||
+          models.find((m: any) => supportsMethod(m, "generateContent") && m.name === "models/gemini-3.5-flash-lite") ||
+          models.find((m: any) => supportsMethod(m, "generateContent") && m.name === "models/gemini-3.1-flash-lite") ||
+          models.find((m: any) => supportsMethod(m, "generateContent") && m.name.startsWith("models/gemini-3.")) ||
+          models.find((m: any) => supportsMethod(m, "generateContent") && m.name.startsWith("models/gemini-"));
         
         if (!fallbackModel) throw new Error(`HTTP ${response.status} and no fallback model found.`);
         
-        const fallbackUrl = `https://generativelanguage.googleapis.com/v1beta/${fallbackModel.name}:generateContent?key=${key}`;
+        const fallbackUrl = `https://generativelanguage.googleapis.com/v1/${fallbackModel.name}:generateContent?key=${key}`;
         const fallbackResponse = await fetch(fallbackUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
