@@ -79,6 +79,7 @@ Powered by **Supabase Auth** with verified industry-standard flows:
 - ✅ Email + Password authentication (with Supabase session management)
 - ✅ Google OAuth single-sign on (with profile auto-creation on first login)
 - ✅ Role-based access control (RBAC) with 4 roles: `customer`, `staff`, `manager`, `owner`
+- 🛡️ **Security Note**: All new sign-ups (Email/Google) default to the `customer` role. Admin/Staff privileges are strictly managed by the Team Leader (**Dipanshu Dhiman**) via the database to prevent unauthorized access.
 - ✅ `RequireRole` route guard redirects unauthenticated users to `/login` with a `next` param for post-login return, and redirects wrong-role users back to their default dashboard
 - ✅ Granular permission matrix (`ROLE_PERMISSIONS`) with 18 capability flags covering view_menu through full_access
 - ✅ Automatic profile creation on signup with user_metadata from Google
